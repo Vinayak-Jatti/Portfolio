@@ -121,22 +121,54 @@ const Desktop = () => {
         {desktopIcons.map((icon, index) => (
           <motion.div
             key={icon.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.4 }}
-            className="flex flex-col items-center cursor-pointer group"
+            initial={{ opacity: 0, y: 24, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{
+              delay: index * 0.08,
+              type: "spring",
+              stiffness: 120,
+              damping: 14,
+              mass: 0.6,
+            }}
+            className="flex flex-col items-center cursor-pointer group select-none"
             onDoubleClick={() => handleIconDoubleClick(icon)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{
+              scale: 1.12,
+              y: -4,
+              transition: {
+                type: "spring",
+                stiffness: 300,
+                damping: 18,
+              },
+            }}
+            whileTap={{ scale: 0.96 }}
           >
             {/* Icon Container */}
-            <div className="w-16 h-16 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-2xl mb-2 border border-white/20 shadow-lg group-hover:bg-white/20 transition-all">
+            <motion.div
+              className="w-16 h-16 flex items-center justify-center
+               bg-white/10 backdrop-blur-md rounded-2xl mb-2
+               border border-white/20 shadow-lg"
+              whileHover={{
+                boxShadow: "0px 12px 30px rgba(255,255,255,0.15)",
+                backgroundColor: "rgba(255,255,255,0.22)",
+              }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
               <span className="text-3xl">{icon.icon}</span>
-            </div>
+            </motion.div>
+
             {/* Icon Label */}
-            <div className="px-2 py-0.5 rounded bg-black/50 backdrop-blur-sm text-white text-xs font-medium text-center max-w-[80px] truncate">
+            <motion.div
+              className="px-2 py-0.5 rounded
+               bg-white/50 backdrop-blur-sm
+               text-black text-xs font-medium text-center
+               max-w-[80px] truncate"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: index * 0.08 + 0.15 }}
+            >
               {icon.title}
-            </div>
+            </motion.div>
           </motion.div>
         ))}
       </div>

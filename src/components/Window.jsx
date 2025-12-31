@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useWindow } from '../context/WindowContext'
+import { useState, useRef, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useWindow } from "../context/WindowContext";
 
 const Window = ({ window: win }) => {
   const {
@@ -10,82 +10,88 @@ const Window = ({ window: win }) => {
     focusWindow,
     updateWindowPosition,
     updateWindowSize,
-  } = useWindow()
+  } = useWindow();
 
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
-  const [isResizing, setIsResizing] = useState(false)
-  const windowRef = useRef(null)
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isResizing, setIsResizing] = useState(false);
+  const windowRef = useRef(null);
 
   const handleMouseDown = (e) => {
-    if (e.target.closest('.window-controls')) return
-    if (e.target.closest('.window-resize')) return
-    
-    focusWindow(win.id)
-    setIsDragging(true)
+    if (e.target.closest(".window-controls")) return;
+    if (e.target.closest(".window-resize")) return;
+
+    focusWindow(win.id);
+    setIsDragging(true);
     setDragStart({
       x: e.clientX - win.position.x,
       y: e.clientY - win.position.y,
-    })
-  }
+    });
+  };
 
-  const handleMouseMove = useCallback((e) => {
-    if (isDragging && !win.maximized) {
-      updateWindowPosition(win.id, {
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y,
-      })
-    }
-  }, [isDragging, dragStart, win.maximized, win.id, updateWindowPosition])
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (isDragging && !win.maximized) {
+        updateWindowPosition(win.id, {
+          x: e.clientX - dragStart.x,
+          y: e.clientY - dragStart.y,
+        });
+      }
+    },
+    [isDragging, dragStart, win.maximized, win.id, updateWindowPosition]
+  );
 
   const handleMouseUp = useCallback(() => {
-    setIsDragging(false)
-    setIsResizing(false)
-  }, [])
+    setIsDragging(false);
+    setIsResizing(false);
+  }, []);
 
   const handleResizeMouseDown = (e) => {
-    e.stopPropagation()
-    setIsResizing(true)
+    e.stopPropagation();
+    setIsResizing(true);
     setDragStart({
       x: e.clientX,
       y: e.clientY,
       width: win.size.width,
       height: win.size.height,
-    })
-  }
+    });
+  };
 
-  const handleResizeMouseMove = useCallback((e) => {
-    if (isResizing && !win.maximized && dragStart.width && dragStart.height) {
-      const deltaX = e.clientX - dragStart.x
-      const deltaY = e.clientY - dragStart.y
-      updateWindowSize(win.id, {
-        width: Math.max(400, dragStart.width + deltaX),
-        height: Math.max(300, dragStart.height + deltaY),
-      })
-    }
-  }, [isResizing, dragStart, win.maximized, win.id, updateWindowSize])
+  const handleResizeMouseMove = useCallback(
+    (e) => {
+      if (isResizing && !win.maximized && dragStart.width && dragStart.height) {
+        const deltaX = e.clientX - dragStart.x;
+        const deltaY = e.clientY - dragStart.y;
+        updateWindowSize(win.id, {
+          width: Math.max(400, dragStart.width + deltaX),
+          height: Math.max(300, dragStart.height + deltaY),
+        });
+      }
+    },
+    [isResizing, dragStart, win.maximized, win.id, updateWindowSize]
+  );
 
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
     }
-  }, [isDragging, handleMouseMove, handleMouseUp])
+  }, [isDragging, handleMouseMove, handleMouseUp]);
 
   useEffect(() => {
     if (isResizing) {
-      document.addEventListener('mousemove', handleResizeMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener("mousemove", handleResizeMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
       return () => {
-        document.removeEventListener('mousemove', handleResizeMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
+        document.removeEventListener("mousemove", handleResizeMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
     }
-  }, [isResizing, handleResizeMouseMove, handleMouseUp])
+  }, [isResizing, handleResizeMouseMove, handleMouseUp]);
 
   const windowVariants = {
     minimized: {
@@ -98,7 +104,7 @@ const Window = ({ window: win }) => {
       scale: 1,
       y: 0,
     },
-  }
+  };
 
   return (
     <AnimatePresence>
@@ -114,8 +120,8 @@ const Window = ({ window: win }) => {
           style={{
             left: win.maximized ? 0 : win.position.x,
             top: win.maximized ? 0 : win.position.y,
-            width: win.maximized ? '100%' : win.size.width,
-            height: win.maximized ? '100%' : win.size.height,
+            width: win.maximized ? "100%" : win.size.width,
+            height: win.maximized ? "100%" : win.size.height,
             zIndex: win.zIndex,
           }}
           onMouseDown={handleMouseDown}
@@ -124,7 +130,7 @@ const Window = ({ window: win }) => {
           <div className="flex items-center justify-between h-11 bg-white/10 backdrop-blur-md border-b border-white/10 px-4 cursor-move">
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <span className="text-lg">{win.icon}</span>
-              <span className="text-sm font-medium text-white truncate">
+              <span className="text-sm font-medium text-black truncate">
                 {win.title}
               </span>
             </div>
@@ -133,23 +139,34 @@ const Window = ({ window: win }) => {
             <div className="flex items-center gap-1 window-controls">
               <button
                 onClick={() => minimizeWindow(win.id)}
-                className="w-10 h-10 flex items-center justify-center hover:bg-white/20 rounded transition-colors"
+                className="w-10 h-10 flex items-center justify-center hover:bg-yellow-50 rounded transition-colors"
               >
-                <span className="text-white text-sm">−</span>
+                <span className="text-zinc-700 text-sm font-semibold">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    fill="currentColor"
+                    class="bi bi-dash"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                  </svg>
+                </span>
               </button>
               <button
                 onClick={() => toggleMaximizeWindow(win.id)}
-                className="w-10 h-10 flex items-center justify-center hover:bg-white/20 rounded transition-colors"
+                className="w-10 h-10 flex items-center justify-center hover:bg-green-100 rounded transition-colors"
               >
-                <span className="text-white text-sm">
-                  {win.maximized ? '❐' : '□'}
+                <span className="text-zinc-700 text-sm">
+                  {win.maximized ? "❐" : "□"}
                 </span>
               </button>
               <button
                 onClick={() => closeWindow(win.id)}
-                className="w-10 h-10 flex items-center justify-center hover:bg-red-500/80 rounded transition-colors"
+                className="w-10 h-10 flex items-center justify-center hover:bg-red-400/80 rounded transition-colors"
               >
-                <span className="text-white text-sm">✕</span>
+                <span className="text-zinc-700 text-sm">✕</span>
               </button>
             </div>
           </div>
@@ -171,8 +188,7 @@ const Window = ({ window: win }) => {
         </motion.div>
       )}
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default Window
-
+export default Window;
