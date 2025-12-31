@@ -129,8 +129,8 @@ const Window = ({ window: win }) => {
           {/* Title Bar */}
           <div className="flex items-center justify-between h-11 bg-white/10 backdrop-blur-md border-b border-white/10 px-4 cursor-move">
             <div className="flex items-center gap-3 flex-1 min-w-0">
-              <span className="text-lg">{win.icon}</span>
-              <span className="text-sm font-medium text-black truncate">
+              <span className="text-lg text-gray-600">{win.icon}</span>
+              <span className="text-sm font-bold font-sans text-gray-700 truncate">
                 {win.title}
               </span>
             </div>
